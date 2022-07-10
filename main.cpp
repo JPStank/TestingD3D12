@@ -63,6 +63,10 @@ bool gVSync = true;
 bool gTearingSupported = false;
 bool gFullScreen = false;
 
+float gRed = 0.0f;
+float gGreen = 0.2f;
+float gBlue = 0.9f;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 void ParseCommandLineArguments()
@@ -412,7 +416,12 @@ void Update()
 	auto t1 = clock.now();
 	auto deltaTime = t1 - t0;
 	t0 = t1;
-	elapsedSeconds += deltaTime.count() * 1e-9; // convert nanosec to sec
+	auto dt = deltaTime.count() * 1e-9; // convert nanosec to sec
+	elapsedSeconds += dt;
+
+	static int colorDir = 1;
+
+	gRed += dt * colorDir;
 
 	if (elapsedSeconds > 1.0)
 	{
@@ -423,6 +432,8 @@ void Update()
 
 		frameCounter = 0;
 		elapsedSeconds = 0.0;
+
+		colorDir *= -1;
 	}
 }
 
@@ -439,7 +450,7 @@ void Render()
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(backBuffer.Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		gCommandList->ResourceBarrier(1, &barrier);
 
-		float clearColor[] = { 0.8f, 0.1f, 0.7f, 1.0f };
+		float clearColor[] = { gRed, gGreen, gBlue, 1.0f };
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(gRTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), gCurrentBackBufferIndex, gRTVDescriptorSize);
 		gCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
 	}
