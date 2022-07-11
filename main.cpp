@@ -391,7 +391,7 @@ void Update()
 
 	static int colorDir = 1;
 
-	gRed += dt * colorDir;
+	gRed += (float)(dt * colorDir);
 
 	if (elapsedSeconds > 1.0)
 	{
