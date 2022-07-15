@@ -56,8 +56,8 @@ public:
 
 	int X;
 	int Y;
-	int DeltaX;
-	int DeltaY;
+	int DeltaX = 0;
+	int DeltaY = 0;
 };
 
 class MouseButtonEventArgs : public EventArgs
